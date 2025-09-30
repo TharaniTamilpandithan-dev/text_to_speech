@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div>
+    <h1>Text-to-Speech</h1>
+    <input type="text" placeholder="Enter the text" id="input"><br>
+    <button onclick="speak()" type="button" >Speak</button>
+  </div>
+
+  <script>
+    let voices = [];
+
+    function loadVoices() {
+      voices = speechSynthesis.getVoices();
+
+      
+      const femaleVoice = voices.find(v =>
+        v.name.toLowerCase().includes("female") ||
+        v.name.toLowerCase().includes("woman") ||
+        v.name.toLowerCase().includes("girl") ||
+        v.name.toLowerCase().includes("samantha") || 
+        v.name.toLowerCase().includes("zira")      
+      );
+
+      if (femaleVoice) {
+        window.defaultVoice = femaleVoice;
+      } else {
+        window.defaultVoice = voices[0];
+      }
+    }
+
+    speechSynthesis.onvoiceschanged = loadVoices;
+
+    function speak() {
+      const input = document.getElementById("input").value;
+      if (!input) return alert("Please enter text!");
+
+      const utterance = new SpeechSynthesisUtterance(input);
+      if (window.defaultVoice) {
+        utterance.voice = window.defaultVoice;
+      }
+      speechSynthesis.speak(utterance);
+    }
+    document.getElementById("input").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        speak();
+      }
+    });
+  </script>
+</body>
+</html>
